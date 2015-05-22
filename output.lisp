@@ -33,7 +33,7 @@
   "Writes the header for a documentation entry of name NAME and
 type TYPE.  The HTML anchor will only get a 'name' attribute if
 WRITE-NAME-P is true and NAME is not a SETF name."
-  (format t "~%~%<!-- Entry for ~A -->~%~%<p><br>[~A]<br><a class=none~@[ name='~A'~]>" 
+  (format t "~%~%<!-- Entry for ~A -->~%~%<p><br>[~A]<br><a class=none~@[ name='~A'~]>"
           name type (and write-name-p (atom name) (string-downcase name))))
 
 (defun write-entry-footer (name doc-string)
@@ -59,7 +59,7 @@ SYMBOL."
   "Writes a full documentation entry for the class SYMBOL."
   (write-entry-header symbol (if (subtypep symbol 'condition)
                                "Condition type" "Standard class"))
-                               
+
   (format t "<b>~A</b></a>" (string-downcase symbol))
   (write-entry-footer symbol doc-string))
 
@@ -139,7 +139,7 @@ full header."
                                other-entries)))
          (resultp (and (not setfp)
                        (null (intersection '(:before :after)
-                                           qualifiers)))))    
+                                           qualifiers)))))
     (cond (signature-only-p
            (write-string "<a class=none>"))
           (t
@@ -212,8 +212,9 @@ written.  OTHER-ENTRIES, probably updated, will be returned."
   "Writes the header of the HTML page.  Assumes that the library
 has the same name as the package.  Adds a list of all exported
 symbols with links."
-  (format t "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">
-<html> 
+  (let ((package-name (string-downcase package-name)))
+    (format t "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">
+<html>
 
 <head>
   <meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">
@@ -223,16 +224,16 @@ symbols with links."
   h3, h4 { text-decoration: underline; }
   a { text-decoration: none; padding: 1px 2px 1px 2px; }
   a:visited { text-decoration: none; padding: 1px 2px 1px 2px; }
-  a:hover { text-decoration: none; padding: 1px 1px 1px 1px; border: 1px solid #000000; } 
+  a:hover { text-decoration: none; padding: 1px 1px 1px 1px; border: 1px solid #000000; }
   a:focus { text-decoration: none; padding: 1px 2px 1px 2px; border: none; }
   a.none { text-decoration: none; padding: 0; }
-  a.none:visited { text-decoration: none; padding: 0; } 
-  a.none:hover { text-decoration: none; border: none; padding: 0; } 
-  a.none:focus { text-decoration: none; border: none; padding: 0; } 
-  a.noborder { text-decoration: none; padding: 0; } 
-  a.noborder:visited { text-decoration: none; padding: 0; } 
-  a.noborder:hover { text-decoration: none; border: none; padding: 0; } 
-  a.noborder:focus { text-decoration: none; border: none; padding: 0; }  
+  a.none:visited { text-decoration: none; padding: 0; }
+  a.none:hover { text-decoration: none; border: none; padding: 0; }
+  a.none:focus { text-decoration: none; border: none; padding: 0; }
+  a.noborder { text-decoration: none; padding: 0; }
+  a.noborder:visited { text-decoration: none; padding: 0; }
+  a.noborder:hover { text-decoration: none; border: none; padding: 0; }
+  a.noborder:focus { text-decoration: none; border: none; padding: 0; }
   pre.none { padding:5px; background-color:#ffffff }
   </style>
 </head>
@@ -244,36 +245,38 @@ symbols with links."
 <blockquote>
 <br>&nbsp;<br><h3><a name=abstract class=none>Abstract</a></h3>
 
-The code comes with
-a <a
-href=\"http://www.opensource.org/licenses/bsd-license.php\">BSD-style
-license</a> so you can basically do with it whatever you want.
+<p>
+The code is licensed under
+the <a href=\"http://opensource.org/licenses/MIT\">MIT license</a>.
+</p>
 
 <p>
-<font color=red>Download shortcut:</font> <a href=\"http://weitz.de/files/~A.tar.gz\">http://weitz.de/files/~:*~A.tar.gz</a>.
+<font color=red>Installation shortcut:</font> <code>(ql:quickload :~A)</code>
+</p>
 </blockquote>
 
 <br>&nbsp;<br><h3><a class=none name=\"contents\">Contents</a></h3>
 <ol>
-  <li><a href=\"#download\">Download</a>
-  <li><a href=\"#dictionary\">The ~A dictionary</a>
+  <li><a href=\"#example\">A basic example</a>
+  <li><a href=\"#dictionary\">The ~:*~A dictionary</a>
     <ol>
 ~{      <li><a href=\"#~A\"><code>~:*~A</code></a>
 ~}    </ol>
   <li><a href=\"#ack\">Acknowledgements</a>
 </ol>
 
-<br>&nbsp;<br><h3><a class=none name=\"download\">Download</a></h3>
+<br>&nbsp;<br><h3><a class=none name=\"example\">A basic example</a></h3>
 
-~2:*~A together with this documentation can be downloaded from <a
-href=\"http://weitz.de/files/~2:*~A.tar.gz\">http://weitz.de/files/~:*~A.tar.gz</a>. The
-current version is 0.1.0.
+<!-- A basic example -->
+
+
+<!-- End of basic example -->
 
 <br>&nbsp;<br><h3><a class=none name=\"dictionary\">The ~A dictionary</a></h3>
 
 "
-          package-name subtitle (string-downcase package-name)
-          package-name symbols))
+            package-name subtitle
+            package-name symbols package-name)))
 
 (defun write-page-footer ()
   "Writes the footer of the HTML page."
@@ -284,9 +287,6 @@ current version is 0.1.0.
 <p>
 This documentation was prepared with <a href=\"http://weitz.de/documentation-template/\">DOCUMENTATION-TEMPLATE</a>.
 </p>
-<p>
-$Header: /usr/local/cvsrep/documentation-template/output.lisp,v 1.19 2014-11-23 12:12:59 edi Exp $
-<p><a href=\"http://weitz.de/index.html\">BACK TO MY HOMEPAGE</a>
 
 </body>
 </html>"))
