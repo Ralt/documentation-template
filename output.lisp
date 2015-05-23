@@ -208,7 +208,7 @@ written.  OTHER-ENTRIES, probably updated, will be returned."
                                            :qualifiers qualifiers)))))
   other-entries)
 
-(defun write-page-header (package-name subtitle symbols)
+(defun write-page-header (package-name subtitle symbols example)
   "Writes the header of the HTML page.  Assumes that the library
 has the same name as the package.  Adds a list of all exported
 symbols with links."
@@ -269,6 +269,7 @@ the <a href=\"http://opensource.org/licenses/MIT\">MIT license</a>.
 
 <!-- A basic example -->
 
+~A
 
 <!-- End of basic example -->
 
@@ -276,7 +277,7 @@ the <a href=\"http://opensource.org/licenses/MIT\">MIT license</a>.
 
 "
             package-name subtitle
-            package-name symbols package-name)))
+            package-name symbols example package-name)))
 
 (defun write-page-footer ()
   "Writes the footer of the HTML page."
@@ -303,7 +304,8 @@ This documentation was prepared with <a href=\"http://weitz.de/documentation-tem
                                      ((:maybe-skip-methods-p *maybe-skip-methods-p*)
                                       *maybe-skip-methods-p*)
                                      (if-exists :supersede)
-                                     (if-does-not-exist :create))
+                                     (if-does-not-exist :create)
+                                     (example "A basic example"))
   "Writes an HTML page with preliminary documentation entries and an
 index for all exported symbols of the package PACKAGE to the file
 TARGET.  If MAYBE-SKIP-METHODS-P is true, documentation entries for
@@ -323,7 +325,8 @@ has a documentation string."
                   (let ((entry (or (pop entries) (return))))
                     (setq entries (write-entry entry entries))))))))
         (write-page-header (package-name package) subtitle
-                           (mapcar #'string-downcase (reverse *symbols*)))
+                           (mapcar #'string-downcase (reverse *symbols*))
+                           example)
         (write-string body)
         (write-page-footer))))
   (values))
